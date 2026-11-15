@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#f7f8fa">
+  <title>RabiNotes CMS</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="RabiNotes home"><span class="mark">r.</span> RabiNotes <span class="muted">/ CMS</span></a>
+    <div class="top-actions"><a href="/" target="_blank" rel="noreferrer">View blog ↗</a><button id="logout" class="button quiet" hidden>Sign out</button></div>
+  </header>
+  <main class="shell">
+    <section id="login-screen" class="login-card">
+      <div class="eyebrow">PRIVATE WORKSPACE</div>
+      <h1>Your writing, in one place.</h1>
+      <p>Sign in with the authorized GitHub account to manage RabiNotes posts.</p>
+      <a class="button primary" href="https://rabinotes-auth.rabsrabi26.workers.dev/auth/login">Continue with GitHub <span>↗</span></a>
+      <p class="hint">Only the configured GitHub account can access this dashboard.</p>
+    </section>
+
+    <section id="app-screen" hidden>
+      <div class="page-heading">
+        <div><div class="eyebrow">CONTENT MANAGEMENT</div><h1>Posts</h1><p class="subheading">Create, edit and publish notes on RabiNotes.</p></div>
+        <button id="new-post" class="button primary">＋ New post</button>
+      </div>
+      <div id="notice" class="notice" role="status" hidden></div>
+      <div class="workspace">
+        <aside class="post-list-panel">
+          <div class="list-heading"><strong>All posts</strong><span id="post-count">0</span></div>
+          <div id="post-list" class="post-list"></div>
+        </aside>
+        <section class="editor-panel">
+          <div id="empty-editor" class="empty-editor"><div class="empty-icon">✎</div><h2>Select a post</h2><p>Choose a post from the list or create a new one.</p></div>
+          <form id="post-form" hidden>
+            <div class="editor-heading"><div><div class="eyebrow" id="editor-mode">EDIT POST</div><h2 id="form-heading">Edit post</h2></div><button type="button" id="delete-post" class="button danger quiet">Delete</button></div>
+            <label>Post title<input id="title" required maxlength="160" placeholder="A clear, useful title"></label>
+            <div class="two-col">
+              <label>URL slug<input id="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="my-new-post"></label>
+              <label>Category<select id="category"><option>Networking</option><option>Wireless</option><option>Research</option><option>Notes</option></select></label>
+            </div>
+            <div class="two-col">
+              <label>Publication date<input id="date" type="date" required></label>
+              <label>Reading time<input id="read" maxlength="30" placeholder="4 min read"></label>
+            </div>
+            <label>Short description<textarea id="description" rows="2" maxlength="240" placeholder="A short summary shown on the homepage"></textarea></label>
+            <div class="body-label"><label for="body">Post body <span>HTML supported</span></label><button type="button" id="preview-toggle" class="text-button">Preview</button></div>
+            <textarea id="body" class="body-editor" rows="15" placeholder="<p>Start writing your post...</p>"></textarea>
+            <div id="preview" class="preview" hidden></div>
+            <div class="save-row"><span id="save-status" class="hint">Changes are saved to GitHub when you publish.</span><button type="submit" id="save-post" class="button primary">Publish changes</button></div>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
