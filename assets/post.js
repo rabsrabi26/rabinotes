@@ -1,0 +1,10 @@
+(() => {
+ const root=document.documentElement,saved=localStorage.getItem('rabinotes-theme');if(saved)root.dataset.theme=saved;else if(matchMedia('(prefers-color-scheme: dark)').matches)root.dataset.theme='dark';
+ document.getElementById('theme-toggle')?.addEventListener('click',()=>{const t=root.dataset.theme==='dark'?'light':'dark';root.dataset.theme=t;localStorage.setItem('rabinotes-theme',t);});
+ const menu=document.getElementById('menu-toggle'),nav=document.querySelector('.nav');menu?.addEventListener('click',()=>{const o=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(o));});
+ document.getElementById('year').textContent=new Date().getFullYear();
+ const slug=new URLSearchParams(location.search).get('slug'),post=(window.RABI_POSTS||[]).find(p=>p.slug===slug),target=document.getElementById('article');
+ if(!post){document.title='Note not found — RabiNotes';target.innerHTML='<div class="not-found"><div class="eyebrow">404 · NOT FOUND</div><h1>That note is missing.</h1><p class="article-description">The page may have moved, or the address may be incorrect.</p><a class="primary-link" href="/">Back to all notes <span>←</span></a></div>';return;}
+ document.title=post.title+' — RabiNotes';document.querySelector('meta[name="description"]').content=post.description;
+ target.innerHTML=`<a class="back-link" href="/#writing">← ALL NOTES</a><header class="article-head"><div class="eyebrow">${post.category.toUpperCase()}</div><h1>${post.title}</h1><p class="article-description">${post.description}</p><div class="article-meta"><time datetime="${post.date}">${new Date(post.date+'T00:00:00').toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'})}</time><span>${post.read}</span><span>By Rabiul Islam</span></div></header><div class="article-body">${post.body}</div><div class="article-footer"><a class="underlined-link" href="/#writing">← Explore more notes</a></div>`;
+})();
