@@ -136,7 +136,7 @@
   $("preview-toggle").addEventListener("click", () => {
     const preview = $("preview");
     if (preview.hidden) {
-      preview.innerHTML = $("body").value;
+      preview.innerHTML = formatBody($("body").value);
       preview.hidden = false;
       $("body").hidden = true;
       $("preview-toggle").textContent = "Back to editor";
@@ -146,6 +146,17 @@
       $("preview-toggle").textContent = "Preview";
     }
   });
+
+  function formatBody(value) {
+    const text = String(value || "").trim();
+    if (!text) return "";
+    // Keep intentional HTML markup; otherwise convert plain text into safe paragraphs.
+    if (/<[a-z][\\s\\S]*>/i.test(text)) return text;
+    const escapeHtml = value => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    return text.split(/\\n\\s*\\n/).map(paragraph =>
+      "<p>" + escapeHtml(paragraph).replace(/\\r?\\n/g, "<br>") + "</p>"
+    ).join("\\n");
+  }
 
   function readForm() {
     const title = $("title").value.trim();
@@ -157,7 +168,7 @@
       slug, title, category: $("category").value, date: $("date").value,
       read: $("read").value.trim() || "3 min read",
       description: $("description").value.trim(),
-      body: $("body").value
+      body: formatBody($("body").value)
     };
   }
 
