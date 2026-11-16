@@ -100,8 +100,9 @@
     $("read").value = post.read || "3 min read";
     $("description").value = post.description || "";
     $("body").value = post.body || "";
+    $("rich-editor").innerHTML = post.body || "";
     $("preview").hidden = true;
-    $("body").hidden = false;
+    $("rich-editor").hidden = false;
     $("preview-toggle").textContent = "Preview";
     renderList();
     clearNotice();
@@ -120,7 +121,9 @@
     $("date").value = new Date().toISOString().slice(0, 10);
     $("read").value = "3 min read";
     $("preview").hidden = true;
-    $("body").hidden = false;
+    $("body").value = "";
+    $("rich-editor").innerHTML = "";
+    $("rich-editor").hidden = false;
     $("preview-toggle").textContent = "Preview";
     clearNotice();
   }
@@ -133,16 +136,41 @@
   });
   $("slug").addEventListener("input", () => { $("slug").dataset.edited = "true"; });
 
+  document.querySelectorAll(".editor-toolbar [data-command]").forEach(button => {
+    button.addEventListener("click", () => {
+      $("rich-editor").focus();
+      const command = button.dataset.command;
+      document.execCommand(command, false, button.dataset.value || null);
+      syncEditor();
+    });
+  });
+  document.querySelectorAll(".editor-toolbar [data-block]").forEach(button => {
+    button.addEventListener("click", () => {
+      $("rich-editor").focus();
+      document.execCommand("formatBlock", false, button.dataset.block);
+      syncEditor();
+    });
+  });
+  $("insert-link").addEventListener("click", () => {
+    const url = prompt("Enter the link URL (including https://):");
+    if (!url) return;
+    $("rich-editor").focus();
+    document.execCommand("createLink", false, url);
+    syncEditor();
+  });
+  $("rich-editor").addEventListener("input", syncEditor);
+
   $("preview-toggle").addEventListener("click", () => {
     const preview = $("preview");
     if (preview.hidden) {
-      preview.innerHTML = formatBody($("body").value);
+      syncEditor();
+      preview.innerHTML = $("body").value;
       preview.hidden = false;
-      $("body").hidden = true;
+      $("rich-editor").hidden = true;
       $("preview-toggle").textContent = "Back to editor";
     } else {
       preview.hidden = true;
-      $("body").hidden = false;
+      $("rich-editor").hidden = false;
       $("preview-toggle").textContent = "Preview";
     }
   });
@@ -158,7 +186,12 @@
     ).join("\n");
   }
 
+  function syncEditor() {
+    $("body").value = $("rich-editor").innerHTML.trim();
+  }
+
   function readForm() {
+    syncEditor();
     const title = $("title").value.trim();
     const slug = $("slug").value.trim();
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error("Use a URL slug with lowercase letters, numbers and hyphens.");
@@ -168,7 +201,7 @@
       slug, title, category: $("category").value, date: $("date").value,
       read: $("read").value.trim() || "3 min read",
       description: $("description").value.trim(),
-      body: formatBody($("body").value)
+      body: $("body").value || ""
     };
   }
 
