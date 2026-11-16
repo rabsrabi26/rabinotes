@@ -48,8 +48,8 @@
               <label>Reading time<input id="read" maxlength="30" placeholder="4 min read"></label>
             </div>
             <label>Short description<textarea id="description" rows="2" maxlength="240" placeholder="A short summary shown on the homepage"></textarea></label>
-            <div class="body-label"><label for="body">Post body <span>HTML supported</span></label><button type="button" id="preview-toggle" class="text-button">Preview</button></div>
-            <textarea id="body" class="body-editor" rows="15" placeholder="<p>Start writing your post...</p>"></textarea>
+            <div class="body-label"><label for="body">Post body <span>Plain text or HTML</span></label><button type="button" id="preview-toggle" class="text-button">Preview</button></div>
+            <textarea id="body" class="body-editor" rows="15" placeholder="Write normally here. Use a blank line to start a new paragraph. No HTML tags needed."></textarea>
             <div id="preview" class="preview" hidden></div>
             <div class="save-row"><span id="save-status" class="hint">Changes are saved to GitHub when you publish.</span><button type="submit" id="save-post" class="button primary">Publish changes</button></div>
           </form>
