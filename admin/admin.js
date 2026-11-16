@@ -1,6 +1,8 @@
 (() => {
   "use strict";
   const API = "https://rabinotes-auth.rabsrabi26.workers.dev";
+  const LOCAL_MODE = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  const LOCAL_KEY = "rabinotes-local-posts-v1";
   const $ = id => document.getElementById(id);
   const state = { posts: [], sha: null, selected: null, isNew: false, token: sessionStorage.getItem("rabinotes-session") || "" };
 
@@ -34,7 +36,9 @@
   }
 
   async function loadPosts() {
-    const result = await api("/api/posts");
+    const result = LOCAL_MODE
+      ? { content: await fetch("/assets/posts.js").then(response => { if (!response.ok) throw new Error("Could not load /assets/posts.js. Check that Live Server is running from the project root."); return response.text(); }), sha: null }
+      : await api("/api/posts");
     state.sha = result.sha;
     // Run the repository's own posts.js in a sandboxed frame, not in the CMS page.
     const frame = document.createElement("iframe");
@@ -56,7 +60,9 @@
       frame.srcdoc = payload;
     }).finally(() => frame.remove());
     if (!Array.isArray(posts)) throw new Error("The posts file has an unexpected format.");
-    state.posts = posts;
+    const savedLocal = LOCAL_MODE ? localStorage.getItem(LOCAL_KEY) : null;
+    state.posts = savedLocal ? JSON.parse(savedLocal) : posts;
+    if (!Array.isArray(state.posts)) throw new Error("The saved local posts have an unexpected format.");
     renderList();
   }
 
@@ -166,16 +172,20 @@
       if (state.isNew) state.posts.unshift(post);
       else state.posts[state.selected] = post;
       const content = "/* Managed with RabiNotes CMS. */\nwindow.RABI_POSTS = " + JSON.stringify(state.posts, null, 2) + ";\n";
-      const result = await api("/api/posts", {
-        method: "PUT",
-        body: JSON.stringify({ content, sha: state.sha })
-      });
-      state.sha = result.sha || state.sha;
+      if (LOCAL_MODE) {
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(state.posts));
+      } else {
+        const result = await api("/api/posts", {
+          method: "PUT",
+          body: JSON.stringify({ content, sha: state.sha })
+        });
+        state.sha = result.sha || state.sha;
+      }
       state.selected = state.isNew ? 0 : state.selected;
       state.isNew = false;
       renderList();
       selectPost(state.selected);
-      notice("Your post has been published to GitHub. The live site will update after deployment.", "success");
+      notice(LOCAL_MODE ? "Saved in this browser only. Your GitHub repository and website files have not been changed." : "Your post has been published to GitHub. The live site will update after deployment.", "success");
     } catch (error) {
       notice(error.message, "error");
       // Restore the authoritative version from GitHub if a save failed.
@@ -193,16 +203,20 @@
     state.posts.splice(index, 1);
     try {
       const content = "/* Managed with RabiNotes CMS. */\nwindow.RABI_POSTS = " + JSON.stringify(state.posts, null, 2) + ";\n";
-      const result = await api("/api/posts", {
-        method: "PUT",
-        body: JSON.stringify({ content, sha: state.sha })
-      });
-      state.sha = result.sha || state.sha;
+      if (LOCAL_MODE) {
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(state.posts));
+      } else {
+        const result = await api("/api/posts", {
+          method: "PUT",
+          body: JSON.stringify({ content, sha: state.sha })
+        });
+        state.sha = result.sha || state.sha;
+      }
       state.selected = null;
       $("post-form").hidden = true;
       $("empty-editor").hidden = false;
       renderList();
-      notice("Post deleted. The live site will update after deployment.", "success");
+      notice(LOCAL_MODE ? "Post removed from this browser's local test data only." : "Post deleted. The live site will update after deployment.", "success");
     } catch (error) {
       state.posts.splice(index, 0, old);
       renderList();
@@ -219,6 +233,19 @@
   });
 
   async function start() {
+    if (LOCAL_MODE) {
+      try {
+        await loadPosts();
+        showApp();
+        $("save-status").textContent = "Local test mode: changes stay in this browser and are not sent to GitHub.";
+        $("save-post").textContent = "Save locally";
+        notice("Local test mode is active. You can create, edit, preview and delete test posts safely. Nothing is published online.", "success");
+      } catch (error) {
+        showLogin();
+        notice(error.message, "error");
+      }
+      return;
+    }
     const hash = new URLSearchParams(location.hash.slice(1));
     const code = hash.get("code");
     if (code) {
