@@ -151,11 +151,11 @@
     const text = String(value || "").trim();
     if (!text) return "";
     // Keep intentional HTML markup; otherwise convert plain text into safe paragraphs.
-    if (/<[a-z][\\s\\S]*>/i.test(text)) return text;
+    if (/<[a-z][\s\S]*>/i.test(text)) return text;
     const escapeHtml = value => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-    return text.split(/\\n\\s*\\n/).map(paragraph =>
-      "<p>" + escapeHtml(paragraph).replace(/\\r?\\n/g, "<br>") + "</p>"
-    ).join("\\n");
+    return text.split(/\n\s*\n/).map(paragraph =>
+      "<p>" + escapeHtml(paragraph).replace(/\r?\n/g, "<br>") + "</p>"
+    ).join("\n");
   }
 
   function readForm() {
