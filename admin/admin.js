@@ -102,6 +102,8 @@
     $("description").value = post.description || "";
     $("body").value = post.body || "";
     $("rich-editor").innerHTML = post.body || "";
+    selectedImage = null;
+    updateImageSelection();
     $("preview").hidden = true;
     $("rich-editor").hidden = false;
     $("preview-toggle").textContent = "Preview";
@@ -124,6 +126,8 @@
     $("preview").hidden = true;
     $("body").value = "";
     $("rich-editor").innerHTML = "";
+    selectedImage = null;
+    updateImageSelection();
     $("rich-editor").hidden = false;
     $("preview-toggle").textContent = "Preview";
     clearNotice();
@@ -163,6 +167,22 @@
   // Image insertion: local uploads are stored as data URLs for local testing.
   // Use hosted image URLs for online posts; permanent uploads will use R2 later.
   let savedEditorRange = null;
+  let selectedImage = null;
+  function updateImageSelection() {
+    const active = !!selectedImage && $("rich-editor").contains(selectedImage);
+    $("replace-image-upload").disabled = !active;
+    $("edit-image-url").disabled = !active;
+    $("remove-image").disabled = !active;
+    $("rich-editor").querySelectorAll("img.selected-image").forEach(image => image.classList.remove("selected-image"));
+    if (active) selectedImage.classList.add("selected-image");
+    else selectedImage = null;
+  }
+  $("rich-editor").addEventListener("click", event => {
+    const image = event.target.closest("img");
+    selectedImage = image && $("rich-editor").contains(image) ? image : null;
+    updateImageSelection();
+    if (!selectedImage) rememberEditorSelection();
+  });
   function rememberEditorSelection() {
     const selection = window.getSelection();
     if (selection && selection.rangeCount) savedEditorRange = selection.getRangeAt(0).cloneRange();
@@ -181,6 +201,13 @@
     image.src = src;
     image.alt = alt || "Article image";
     image.loading = "lazy";
+    if (selectedImage && editorContains(selectedImage)) {
+      selectedImage.replaceWith(image);
+      selectedImage = null;
+      updateImageSelection();
+      syncEditor();
+      return;
+    }
     restoreEditorSelection();
     const selection = window.getSelection();
     if (selection && selection.rangeCount && editorContains(selection.anchorNode)) {
@@ -194,13 +221,15 @@
     } else {
       $("rich-editor").appendChild(image);
     }
+    selectedImage = null;
+    updateImageSelection();
     syncEditor();
   }
   function editorContains(node) {
     return !!node && $("rich-editor").contains(node);
   }
   $("insert-image-url").addEventListener("click", () => {
-    rememberEditorSelection();
+    if (!selectedImage) rememberEditorSelection();
     const url = prompt("Paste the direct image URL (https://...):");
     if (!url) return;
     let parsed;
@@ -217,8 +246,42 @@
       notice("For online posts, use Insert image URL for now. Direct uploads will be enabled with permanent image storage before deployment.", "error");
       return;
     }
-    rememberEditorSelection();
+    if (!selectedImage) rememberEditorSelection();
     $("image-file").click();
+  });
+  $("replace-image-upload").addEventListener("click", () => {
+    if (!selectedImage || !editorContains(selectedImage)) return;
+    if (!LOCAL_MODE) {
+      notice("For online posts, use Change image URL for now. Direct uploads will be enabled with permanent image storage before deployment.", "error");
+      return;
+    }
+    $("image-file").click();
+  });
+  $("edit-image-url").addEventListener("click", () => {
+    if (!selectedImage || !editorContains(selectedImage)) return;
+    const url = prompt("Paste the new direct image URL (https://...):", selectedImage.src);
+    if (!url) return;
+    let parsed;
+    try { parsed = new URL(url); } catch (_) { notice("Please enter a valid image URL.", "error"); return; }
+    if (!["https:", "http:"].includes(parsed.protocol)) {
+      notice("Image URLs must start with http:// or https://.", "error");
+      return;
+    }
+    const alt = prompt("Describe the replacement image briefly:", selectedImage.alt || "Article image");
+    selectedImage.src = parsed.href;
+    selectedImage.alt = alt || "Article image";
+    selectedImage = null;
+    updateImageSelection();
+    syncEditor();
+    notice("Image updated. Save the post to keep the change.", "success");
+  });
+  $("remove-image").addEventListener("click", () => {
+    if (!selectedImage || !editorContains(selectedImage)) return;
+    selectedImage.remove();
+    selectedImage = null;
+    updateImageSelection();
+    syncEditor();
+    notice("Image removed. Save the post to keep the change.", "success");
   });
   $("image-file").addEventListener("change", event => {
     const file = event.target.files && event.target.files[0];
