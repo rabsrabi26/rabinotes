@@ -12,3 +12,5 @@
 .post-tags{display:flex;flex-wrap:wrap;gap:6px;margin:-8px 0 12px}
 .topic-tag{display:inline-flex;align-items:center;padding:4px 8px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font:10px var(--mono);background:var(--surface)}
 .article-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+
+.article-body img{display:block;max-width:100%;height:auto;margin:28px auto;border-radius:8px}
