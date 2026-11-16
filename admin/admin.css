@@ -17,3 +17,7 @@
 .rich-editor pre{padding:13px;background:#f1f3f6;border-radius:6px;white-space:pre-wrap;font:12px/1.6 var(--mono)}
 .rich-editor ul,.rich-editor ol,.preview ul,.preview ol{padding-left:25px;margin:0 0 1em}
 .rich-editor a{color:var(--accent);text-decoration:underline}
+
+.topic-tag{display:inline-flex;align-items:center;margin:0 6px 6px 0;padding:3px 8px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font:10px var(--mono);background:var(--surface)}
+.post-tags{margin:-8px 0 12px}
+.article-tags{margin-top:18px}
