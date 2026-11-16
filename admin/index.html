@@ -48,8 +48,26 @@
               <label>Reading time<input id="read" maxlength="30" placeholder="4 min read"></label>
             </div>
             <label>Short description<textarea id="description" rows="2" maxlength="240" placeholder="A short summary shown on the homepage"></textarea></label>
-            <div class="body-label"><label for="body">Post body <span>Plain text or HTML</span></label><button type="button" id="preview-toggle" class="text-button">Preview</button></div>
-            <textarea id="body" class="body-editor" rows="15" placeholder="Write normally here. Use a blank line to start a new paragraph. No HTML tags needed."></textarea>
+            <div class="body-label"><label for="rich-editor">Post body <span>Rich text editor — no HTML needed</span></label><button type="button" id="preview-toggle" class="text-button">Preview</button></div>
+            <div class="editor-toolbar" role="toolbar" aria-label="Text formatting">
+              <button type="button" data-command="bold" title="Bold"><strong>B</strong></button>
+              <button type="button" data-command="italic" title="Italic"><em>I</em></button>
+              <button type="button" data-command="underline" title="Underline"><u>U</u></button>
+              <span class="toolbar-divider"></span>
+              <button type="button" data-block="h2" title="Heading">H2</button>
+              <button type="button" data-block="h3" title="Subheading">H3</button>
+              <button type="button" data-block="p" title="Paragraph">¶</button>
+              <span class="toolbar-divider"></span>
+              <button type="button" data-command="insertUnorderedList" title="Bullet list">• List</button>
+              <button type="button" data-command="insertOrderedList" title="Numbered list">1. List</button>
+              <button type="button" data-command="formatBlock" data-value="blockquote" title="Quote">❝ Quote</button>
+              <button type="button" data-command="formatBlock" data-value="pre" title="Code block">&lt;/&gt;</button>
+              <span class="toolbar-divider"></span>
+              <button type="button" id="insert-link" title="Insert link">Link</button>
+              <button type="button" data-command="removeFormat" title="Clear formatting">Clear</button>
+            </div>
+            <div id="rich-editor" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Post content" data-placeholder="Start writing your article here..."></div>
+            <textarea id="body" hidden></textarea>
             <div id="preview" class="preview" hidden></div>
             <div class="save-row"><span id="save-status" class="hint">Changes are saved to GitHub when you publish.</span><button type="submit" id="save-post" class="button primary">Publish changes</button></div>
           </form>
