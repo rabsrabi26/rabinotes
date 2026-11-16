@@ -96,6 +96,7 @@
     $("title").value = post.title || "";
     $("slug").value = post.slug || "";
     $("category").value = post.category || "Notes";
+    $("tags").value = (post.tags || []).join(", ");
     $("date").value = post.date || new Date().toISOString().slice(0, 10);
     $("read").value = post.read || "3 min read";
     $("description").value = post.description || "";
@@ -198,7 +199,9 @@
     const duplicate = state.posts.some((p, i) => p.slug === slug && (state.isNew || i !== state.selected));
     if (duplicate) throw new Error("That URL slug is already used by another post.");
     return {
-      slug, title, category: $("category").value, date: $("date").value,
+      slug, title, category: $("category").value.trim() || "Notes",
+      tags: [...new Set($("tags").value.split(",").map(tag => tag.trim()).filter(Boolean))],
+      date: $("date").value,
       read: $("read").value.trim() || "3 min read",
       description: $("description").value.trim(),
       body: $("body").value || ""
