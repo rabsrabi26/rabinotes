@@ -21,3 +21,7 @@
 .topic-tag{display:inline-flex;align-items:center;margin:0 6px 6px 0;padding:3px 8px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font:10px var(--mono);background:var(--surface)}
 .post-tags{margin:-8px 0 12px}
 .article-tags{margin-top:18px}
+
+.rich-editor img,.preview img{display:block;max-width:100%;height:auto;margin:18px auto;border-radius:7px}
+.rich-editor img{cursor:pointer}
+.image-help{margin:7px 0 14px}
