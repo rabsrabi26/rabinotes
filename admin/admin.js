@@ -159,6 +159,88 @@
     document.execCommand("createLink", false, url);
     syncEditor();
   });
+
+  // Image insertion: local uploads are stored as data URLs for local testing.
+  // Use hosted image URLs for online posts; permanent uploads will use R2 later.
+  let savedEditorRange = null;
+  function rememberEditorSelection() {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount) savedEditorRange = selection.getRangeAt(0).cloneRange();
+  }
+  function restoreEditorSelection() {
+    const editor = $("rich-editor");
+    editor.focus();
+    if (savedEditorRange) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedEditorRange);
+    }
+  }
+  function insertImage(src, alt) {
+    const image = document.createElement("img");
+    image.src = src;
+    image.alt = alt || "Article image";
+    image.loading = "lazy";
+    restoreEditorSelection();
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount && editorContains(selection.anchorNode)) {
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(image);
+      range.setStartAfter(image);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } else {
+      $("rich-editor").appendChild(image);
+    }
+    syncEditor();
+  }
+  function editorContains(node) {
+    return !!node && $("rich-editor").contains(node);
+  }
+  $("insert-image-url").addEventListener("click", () => {
+    const url = prompt("Paste the direct image URL (https://...):");
+    if (!url) return;
+    let parsed;
+    try { parsed = new URL(url); } catch (_) { notice("Please enter a valid image URL.", "error"); return; }
+    if (!["https:", "http:"].includes(parsed.protocol)) {
+      notice("Image URLs must start with http:// or https://.", "error");
+      return;
+    }
+    const alt = prompt("Describe the image briefly (for accessibility):") || "Article image";
+    rememberEditorSelection();
+    insertImage(parsed.href, alt);
+  });
+  $("upload-image").addEventListener("click", () => {
+    if (!LOCAL_MODE) {
+      notice("For online posts, use Insert image URL for now. Direct uploads will be enabled with permanent image storage before deployment.", "error");
+      return;
+    }
+    rememberEditorSelection();
+    $("image-file").click();
+  });
+  $("image-file").addEventListener("change", event => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      notice("Please choose an image file.", "error");
+      return;
+    }
+    if (file.size > 1024 * 1024) {
+      notice("For local testing, choose an image smaller than 1 MB to avoid filling browser storage.", "error");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const alt = prompt("Describe the image briefly (for accessibility):") || file.name;
+      insertImage(String(reader.result), alt);
+      notice("Image inserted. It will be saved with this post in this browser only.", "success");
+    };
+    reader.onerror = () => notice("Could not read that image file.", "error");
+    reader.readAsDataURL(file);
+  });
   $("rich-editor").addEventListener("input", syncEditor);
 
   $("preview-toggle").addEventListener("click", () => {
