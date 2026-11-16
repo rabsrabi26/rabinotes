@@ -41,9 +41,10 @@
             <label>Post title<input id="title" required maxlength="160" placeholder="A clear, useful title"></label>
             <div class="two-col">
               <label>URL slug<input id="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="my-new-post"></label>
-              <label>Category<select id="category"><option>Networking</option><option>Wireless</option><option>Research</option><option>Notes</option></select></label>
+              <label>Category<input id="category" list="category-options" value="Notes" placeholder="Choose or type a category"><datalist id="category-options"><option value="Networking"></option><option value="Wireless"></option><option value="Research"></option><option value="Notes"></option></datalist></label>
             </div>
             <div class="two-col">
+              <label>Tags<input id="tags" placeholder="MIMO, 5G, MATLAB, Tutorial"><span class="hint">Separate multiple tags with commas.</span></label>
               <label>Publication date<input id="date" type="date" required></label>
               <label>Reading time<input id="read" maxlength="30" placeholder="4 min read"></label>
             </div>
