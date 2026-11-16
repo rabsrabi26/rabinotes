@@ -25,3 +25,6 @@
 .rich-editor img,.preview img{display:block;max-width:100%;height:auto;margin:18px auto;border-radius:7px}
 .rich-editor img{cursor:pointer}
 .image-help{margin:7px 0 14px}
+
+.rich-editor img.selected-image{outline:3px solid var(--accent);outline-offset:4px}
+.editor-toolbar button:disabled{opacity:.38;cursor:not-allowed}
