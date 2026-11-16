@@ -200,6 +200,7 @@
     return !!node && $("rich-editor").contains(node);
   }
   $("insert-image-url").addEventListener("click", () => {
+    rememberEditorSelection();
     const url = prompt("Paste the direct image URL (https://...):");
     if (!url) return;
     let parsed;
@@ -209,7 +210,6 @@
       return;
     }
     const alt = prompt("Describe the image briefly (for accessibility):") || "Article image";
-    rememberEditorSelection();
     insertImage(parsed.href, alt);
   });
   $("upload-image").addEventListener("click", () => {
