@@ -30,5 +30,16 @@
     <section class="about-band" id="about"><div class="wrap about-inner"><div><div class="eyebrow">A LITTLE CONTEXT</div><h2>Curiosity, documented.</h2></div><div class="about-copy"><p>RabiNotes is my corner of the internet for documenting what I learn, what I build, and what I discover while exploring communication systems and technology.</p><a href="https://rabsrabi.com" class="underlined-link" target="_blank" rel="noreferrer">More about me on my portfolio <span>↗</span></a></div></div></section>
   </main>
   <footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="/"><span class="brand-mark">r.</span><span>RabiNotes<span class="brand-dot">.</span></span></a><span>© <span id="year"></span> Rabiul Islam. Built with care.</span><a href="https://rabsrabi.com" target="_blank" rel="noreferrer">rabsrabi.com ↗</a></div></footer>
-  <script src="/assets/posts.js"></script><script src="/assets/app.js"></script>
+  <script src="/assets/posts.js"></script><script>
+(() => {
+  const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  if (!isLocal) return;
+  try {
+    const savedPosts = localStorage.getItem("rabinotes-local-posts-v1");
+    if (savedPosts) window.RABI_POSTS = JSON.parse(savedPosts);
+  } catch (error) {
+    console.error("Could not load locally saved RabiNotes posts:", error);
+  }
+})();
+</script><script src="/assets/app.js"></script>
 </body></html>
