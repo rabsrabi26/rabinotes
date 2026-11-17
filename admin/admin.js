@@ -4,29 +4,6 @@
   const LOCAL_MODE = location.hostname === "localhost" || location.hostname === "127.0.0.1";
   const LOCAL_KEY = "rabinotes-local-posts-v1";
   const $ = id => document.getElementById(id);
-  // Match the public blog: follow the system initially, then remember a manual choice.
-  const themeRoot = document.documentElement;
-  const themeButton = $("theme-toggle");
-  const savedTheme = localStorage.getItem("rabinotes-theme");
-  if (savedTheme === "light" || savedTheme === "dark") {
-    themeRoot.dataset.theme = savedTheme;
-  } else {
-    themeRoot.dataset.theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-  function updateThemeButton() {
-    const dark = themeRoot.dataset.theme === "dark";
-    themeButton.textContent = dark ? "☀" : "☾";
-    themeButton.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-    themeButton.title = dark ? "Switch to light mode" : "Switch to dark mode";
-  }
-  updateThemeButton();
-  themeButton.addEventListener("click", () => {
-    const nextTheme = themeRoot.dataset.theme === "dark" ? "light" : "dark";
-    themeRoot.dataset.theme = nextTheme;
-    localStorage.setItem("rabinotes-theme", nextTheme);
-    updateThemeButton();
-  });
-
   const state = { posts: [], sha: null, selected: null, isNew: false, token: sessionStorage.getItem("rabinotes-session") || "" };
 
   function notice(message, type = "") {

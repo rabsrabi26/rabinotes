@@ -1,4 +1,60 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8fa"><meta name="description" content="A note from RabiNotes."><link rel="stylesheet" href="/assets/style.css"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><title>Note — RabiNotes</title></head><body><header class="site-header"><div class="header-inner"><a class="brand" href="/"><span class="brand-mark">r.</span><span>RabiNotes<span class="brand-dot">.</span></span></a><nav class="nav"><a href="/">Home</a><a class="active" href="/#writing">Writing</a><a href="/#about">About</a></nav><div class="header-actions"><button class="icon-button" id="theme-toggle" aria-label="Switch color theme">◐</button><a class="text-link" href="https://rabsrabi.com" target="_blank" rel="noreferrer">Portfolio ↗</a></div><button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">☰</button></div></header><main id="main"><article class="article-wrap" id="article"></article></main><footer class="site-footer"><div class="wrap footer-inner"><a class="brand" href="/"><span class="brand-mark">r.</span><span>RabiNotes<span class="brand-dot">.</span></span></a><span>© <span id="year"></span> Rabiul Islam.</span><a href="/">All notes ←</a></div></footer><script src="/assets/posts.js"></script><script>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F3F6FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#080D17" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/assets/brand/brand.css">
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/brand/brand.js"></script>
+<title>Note · rabsrabi notes</title>
+<meta name="description" content="A note from rabsrabi notes.">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head">
+  <div class="wrap head-in">
+    <a class="lockup" href="/" aria-label="rabsrabi notes, home">
+      <svg class="mark" aria-hidden="true"><use href="#rs-mark"/></svg>
+      <span class="wm">rabs<i>rabi</i></span>
+      <span class="sub">/ notes</span>
+    </a>
+    <nav class="head-nav" aria-label="Main navigation">
+      <a href="/">Home</a>
+      <a href="/#writing" aria-current="page">Writing</a>
+      <a href="/#about">About</a>
+    </nav>
+    <div class="head-end">
+      <button type="button" class="btn" data-palette-open style="min-height:36px;padding:0 12px;font-size:12px" aria-label="Open command palette"><span aria-hidden="true">&#8981;</span><span class="hide-sm">Search</span><kbd class="hide-sm">Ctrl K</kbd></button>
+      <div class="seg" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="auto" aria-pressed="true">Auto</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+  </div>
+</header>
+<main id="main"><article class="article-wrap" id="article"></article></main>
+<footer class="site-foot">
+  <div class="wrap">
+    <a class="lockup" href="/" aria-label="rabsrabi notes, home"><svg class="mark" style="width:26px;height:26px" aria-hidden="true"><use href="#rs-mark"/></svg><span class="wm" style="font-size:17px">rabs<i>rabi</i></span><span class="sub">/ notes</span></a>
+    <div class="links">
+      <a href="https://rabsrabi.com">Portfolio</a>
+      <a href="https://github.com/rabsrabi26" rel="noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/rabsrabi26" rel="noreferrer">LinkedIn</a>
+    </div>
+    <span class="copy">&copy; <span id="year"></span> Rabiul Islam</span>
+  </div>
+</footer>
+<script src="/assets/posts.js"></script>
+<script>
 (() => {
   const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
   if (!isLocal) return;
@@ -6,7 +62,11 @@
     const savedPosts = localStorage.getItem("rabinotes-local-posts-v1");
     if (savedPosts) window.RABI_POSTS = JSON.parse(savedPosts);
   } catch (error) {
-    console.error("Could not load locally saved RabiNotes posts:", error);
+    console.error("Could not load locally saved posts:", error);
   }
 })();
-</script><script src="/assets/post.js"></script></body></html>
+</script>
+<script src="/assets/common.js"></script>
+<script src="/assets/post.js"></script>
+</body>
+</html>

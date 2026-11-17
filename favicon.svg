@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#2864d8"/><text x="32" y="45" font-family="Arial,sans-serif" font-size="42" font-weight="700" text-anchor="middle" fill="#fff">r.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <style>
+    .t{fill:#067A6C}.g{stroke:#fff}.d{fill:#fff}
+    @media (prefers-color-scheme: dark){.t{fill:#2DD4BF}.g{stroke:#04201C}.d{fill:#04201C}}
+  </style>
+  <rect class="t" width="48" height="48" rx="12"/>
+  <g class="g" fill="none" stroke-linecap="round">
+    <path d="M15.5 34V15" stroke-width="5.5"/>
+    <path d="M15.5 26C15.5 19 19.5 15 26 15" stroke-width="5.5"/>
+    <path d="M40 34A9 9 0 0 0 31 25" stroke-width="4.5"/>
+  </g>
+  <circle class="d" cx="31" cy="34" r="3.6"/>
+</svg>
