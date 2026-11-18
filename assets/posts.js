@@ -2,13 +2,13 @@
 window.RABI_POSTS = [
   {
     "slug": "welcome-to-rabsrabi-notes",
-    "title": "Welcome to rabsrabi/notes",
+    "title": "Welcome to rabsrabi / notes",
     "category": "Notes",
     "tags": [],
     "date": "2026-11-16",
     "read": "2 min read",
     "description": "A small introduction to this notebook, what belongs here, and why I am writing in public.",
-    "body": "<p>Welcome to rabsrabi/notes — a personal space for ideas, experiments, useful explanations, and lessons learned along the way.</p><h2>What you will find here</h2><p>This notebook will grow around networking, wireless communication, research, software, and the practical details that are easy to forget after solving a problem.</p><p>Some posts will be carefully structured guides. Others may be short field notes, experiment logs, or reflections on a concept I have been exploring.</p><h2>Why keep notes in public?</h2><p>Writing helps turn scattered thoughts into something clearer. Sharing those notes may also help someone working through a similar question. I will keep adding to this space as the work develops.</p><blockquote>Learn it, test it, document it, share it.</blockquote><p>Thanks for stopping by. — Rabiul</p>"
+    "body": "<p>Welcome to rabsrabi / notes — a personal space for ideas, experiments, useful explanations, and lessons learned along the way.</p><h2>What you will find here</h2><p>This notebook will grow around networking, wireless communication, research, software, and the practical details that are easy to forget after solving a problem.</p><p>Some posts will be carefully structured guides. Others may be short field notes, experiment logs, or reflections on a concept I have been exploring.</p><h2>Why keep notes in public?</h2><p>Writing helps turn scattered thoughts into something clearer. Sharing those notes may also help someone working through a similar question. I will keep adding to this space as the work develops.</p><blockquote>Learn it, test it, document it, share it.</blockquote><p>Thanks for stopping by. — Rabiul</p>"
   },
   {
     "slug": "understanding-wireless-link-budget",
