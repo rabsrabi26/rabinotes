@@ -1,5 +1,5 @@
 /*!
- * rabsrabi brand kit, v1.0.0
+ * rabsrabi brand kit, v1.1.0
  * Tokens, base styles and shared components for rabsrabi.com, blog.rabsrabi.com and auth.rabsrabi.com.
  * Fonts are loaded by the page with <link> tags (see README). Theme: add data-theme="light|dark" to <html>,
  * or leave it unset to follow the system. brand.js manages that choice.
@@ -187,4 +187,93 @@ html.rs-pal-lock { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- icon-only theme toggle ---------- */
+.theme-trigger {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .16s ease, border-color .16s ease, color .16s ease;
+}
+.theme-trigger:hover {
+  background: var(--signal-soft);
+  border-color: var(--signal);
+}
+.theme-trigger svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.theme-trigger:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+.theme-trigger svg:not([hidden]) { display: block !important; }
+.theme-trigger svg[hidden] { display: none !important; }
+
+
+/* ---------- mobile navigation ---------- */
+.mobile-nav-trigger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+.mobile-nav-trigger svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.mobile-nav-trigger:hover {
+  background: var(--signal-soft);
+}
+.mobile-nav-trigger:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .mobile-nav-trigger {
+    display: inline-grid;
+  }
+  .head-nav.is-open {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 21;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 12px 20px 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 24px rgb(0 0 0 / 10%);
+  }
+  .head-nav.is-open a {
+    display: block;
+    padding: 11px 12px;
+  }
 }
