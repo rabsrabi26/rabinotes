@@ -1,5 +1,5 @@
 /*!
- * rabsrabi brand kit, v1.0.0
+ * rabsrabi brand kit, v1.1.0
  * 1. Theme: Auto / Light / Dark, remembered in a cookie on .rabsrabi.com so all three sites agree.
  * 2. Logo sprite: injects <symbol id="rs-mark"> and <symbol id="rs-mark-sm"> for <svg><use href="#rs-mark"/></svg>.
  * 3. Command palette: Ctrl/Cmd+K or "/" opens it. Pages add their own entries with RabsBrand.setItems([...]).
@@ -8,12 +8,18 @@
  *   <script src="https://brand.rabsrabi.com/v1/brand.js"></script>
  * Theme buttons: any element with data-theme-choice="auto|light|dark".
  * Palette trigger (optional): any element with data-palette-open.
+ *
+ * Options (set before this script loads):
+ *   window.RABS_BRAND = { palette: false };   // a site with its own command palette turns the shared one off
+ * Events: the document receives "themechange" after the theme changes, including when Auto follows the system.
  */
 (function () {
   "use strict";
   var COOKIE = "rs-theme";
   var VALID = ["auto", "light", "dark"];
   var root = document.documentElement;
+  var OPTS = window.RABS_BRAND || {};
+  var PALETTE_ON = OPTS.palette !== false;
 
   /* ---------- theme ---------- */
   function cookieDomain() {
@@ -31,6 +37,20 @@
     var v = readCookie() || readStore();
     return VALID.indexOf(v) > -1 ? v : "auto";
   }
+  function updateThemePicker(choice) {
+    var names = { auto: "System", light: "Light", dark: "Dark" };
+    var pickers = document.querySelectorAll("[data-theme-picker]");
+    for (var i = 0; i < pickers.length; i++) {
+      var trigger = pickers[i].querySelector("[data-theme-trigger]");
+      if (!trigger) continue;
+      var icons = trigger.querySelectorAll("[data-theme-trigger-icon]");
+      for (var j = 0; j < icons.length; j++) {
+        if (icons[j].getAttribute("data-theme-trigger-icon") === choice) { icons[j].removeAttribute("hidden"); } else { icons[j].setAttribute("hidden", ""); }
+      }
+      trigger.setAttribute("aria-label", "Theme preference: " + names[choice]);
+      trigger.setAttribute("title", "Theme preference: " + names[choice]);
+    }
+  }
   function paint(choice) {
     if (choice === "light" || choice === "dark") root.setAttribute("data-theme", choice);
     else root.removeAttribute("data-theme");
@@ -38,6 +58,7 @@
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-theme-choice") === choice));
     }
+    updateThemePicker(choice);
   }
   function setTheme(choice) {
     if (VALID.indexOf(choice) < 0) choice = "auto";
@@ -47,8 +68,18 @@
     } catch (e) {}
     try { localStorage.setItem(COOKIE, choice); } catch (e) {}
     paint(choice);
+    announce();
+  }
+  function announce() {
+    try { document.dispatchEvent(new Event("themechange")); } catch (e) {}
   }
   paint(getTheme()); // before first paint
+  if (window.matchMedia) {
+    var mq = matchMedia("(prefers-color-scheme: dark)");
+    var onSystem = function () { if (getTheme() === "auto") announce(); };
+    if (mq.addEventListener) mq.addEventListener("change", onSystem);
+    else if (mq.addListener) mq.addListener(onSystem);
+  }
 
   /* ---------- logo sprite ---------- */
   var SPRITE =
@@ -188,7 +219,7 @@
   }
 
   /* ---------- wire up ---------- */
-  document.addEventListener("keydown", function (e) {
+  if (PALETTE_ON) document.addEventListener("keydown", function (e) {
     if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "k") {
       e.preventDefault();
       overlay ? close() : open();
@@ -197,10 +228,50 @@
       open();
     }
   });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    var menuNav = document.getElementById("brand-nav");
+    var menuButton = document.querySelector("[data-mobile-nav-trigger]");
+    if (menuNav && menuNav.classList.contains("is-open")) {
+      menuNav.classList.remove("is-open");
+      if (menuButton) {
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute("aria-label", "Open navigation");
+        menuButton.focus();
+      }
+    }
+  });
   document.addEventListener("click", function (e) {
-    var t = e.target.closest && e.target.closest("[data-theme-choice]");
-    if (t) { setTheme(t.getAttribute("data-theme-choice")); return; }
-    var p = e.target.closest && e.target.closest("[data-palette-open]");
+    var menuTrigger = e.target.closest && e.target.closest("[data-mobile-nav-trigger]");
+    if (menuTrigger) {
+      var menuNav = document.getElementById("brand-nav");
+      var menuOpen = menuTrigger.getAttribute("aria-expanded") === "true";
+      menuTrigger.setAttribute("aria-expanded", String(!menuOpen));
+      menuTrigger.setAttribute("aria-label", menuOpen ? "Open navigation" : "Close navigation");
+      if (menuNav) menuNav.classList.toggle("is-open", !menuOpen);
+      return;
+    }
+
+    var menuLink = e.target.closest && e.target.closest("#brand-nav a");
+    if (menuLink) {
+      var menuButton = document.querySelector("[data-mobile-nav-trigger]");
+      var menuNav = document.getElementById("brand-nav");
+      if (menuNav) menuNav.classList.remove("is-open");
+      if (menuButton) {
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute("aria-label", "Open navigation");
+      }
+    }
+
+    var trigger = e.target.closest && e.target.closest("[data-theme-trigger]");
+    if (trigger) {
+      var choices = ["auto", "light", "dark"];
+      var current = getTheme();
+      var next = choices[(choices.indexOf(current) + 1) % choices.length];
+      setTheme(next);
+      return;
+    }
+    var p = PALETTE_ON && e.target.closest && e.target.closest("[data-palette-open]");
     if (p) { e.preventDefault(); open(); }
   });
   function ready() { injectSprite(); paint(getTheme()); }
@@ -208,9 +279,14 @@
   else ready();
 
   window.RabsBrand = {
-    version: "1.0.0",
+    version: "1.1.0",
     getTheme: getTheme,
     setTheme: setTheme,
     palette: { open: open, close: close, setItems: setItems }
   };
 })();
+
+
+
+
+
